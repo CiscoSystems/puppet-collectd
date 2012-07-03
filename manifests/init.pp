@@ -26,7 +26,7 @@ class collectd {
 	ensure  => present,
         owner   => "root",
         group   => "root",
-        mode    => 0755,
+        mode    => 0600,
         source  => "puppet:///modules/collectd/collectd.conf",
 	require => Package["collectd"],
     }
