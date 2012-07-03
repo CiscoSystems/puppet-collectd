@@ -1,0 +1,4 @@
+puppet-collectd
+===============
+
+collectd configuration
