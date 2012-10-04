@@ -1,0 +1,18 @@
+<LoadPlugin "python">
+    Globals true
+</LoadPlugin>
+
+<Plugin "python">
+    # carbon_writer.py is at path /usr/local/collectd-plugins/carbon_writer.py
+    ModulePath "/etc/collectd/collectd-plugins/"
+
+    Import "carbon_writer"
+
+    <Module "carbon_writer">
+        LineReceiverHost "<%= graphitehost %>"
+        LineReceiverPort 2003
+        DifferentiateCountersOverTime true
+        LowercaseMetricNames true
+        TypesDB "/usr/share/collectd/types.db"
+    </Module>
+</Plugin>

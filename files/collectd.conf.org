@@ -14,17 +14,16 @@ FQDNLookup true
 #Interval 10
 #Timeout 2
 #ReadThreads 5
-Include "/etc/collectd/carbon-writer.conf"
 
-LoadPlugin "logfile"
+#LoadPlugin logfile
 LoadPlugin syslog
 
-<Plugin "logfile">
-	LogLevel "info"
-	File "/var/log/collectd.log"
-	Timestamp true
-	PrintSeverity true
-</Plugin>
+#<Plugin logfile>
+#	LogLevel "info"
+#	File STDOUT
+#	Timestamp true
+#	PrintSeverity false
+#</Plugin>
 
 <Plugin syslog>
 	LogLevel info
@@ -37,15 +36,15 @@ LoadPlugin syslog
 #LoadPlugin bind
 #LoadPlugin conntrack
 #LoadPlugin contextswitch
-LoadPlugin cpu
+#LoadPlugin cpu
 #LoadPlugin cpufreq
-#LoadPlugin csv
+LoadPlugin csv
 #LoadPlugin curl
 #LoadPlugin curl_json
 #LoadPlugin curl_xml
 #LoadPlugin dbi
-LoadPlugin df
-LoadPlugin disk
+#LoadPlugin df
+#LoadPlugin disk
 #LoadPlugin dns
 #LoadPlugin email
 #LoadPlugin entropy
@@ -54,19 +53,19 @@ LoadPlugin disk
 #LoadPlugin fscache
 #LoadPlugin gmond
 #LoadPlugin hddtemp
-LoadPlugin interface
+#LoadPlugin interface
 #LoadPlugin ipmi
 #LoadPlugin iptables
 #LoadPlugin ipvs
 #LoadPlugin irq
 #LoadPlugin java
 LoadPlugin libvirt
-LoadPlugin load
+#LoadPlugin load
 #LoadPlugin madwifi
 #LoadPlugin mbmon
 #LoadPlugin memcachec
 #LoadPlugin memcached
-LoadPlugin memory
+#LoadPlugin memory
 #LoadPlugin multimeter
 #LoadPlugin mysql
 #LoadPlugin netlink
@@ -84,10 +83,11 @@ LoadPlugin network
 #LoadPlugin ping
 #LoadPlugin postgresql
 #LoadPlugin powerdns
-LoadPlugin processes
+#LoadPlugin processes
 LoadPlugin protocols
+#LoadPlugin python
 #LoadPlugin rrdcached
-LoadPlugin rrdtool
+#LoadPlugin rrdtool
 #LoadPlugin sensors
 #LoadPlugin serial
 #LoadPlugin snmp
@@ -103,7 +103,7 @@ LoadPlugin rrdtool
 #LoadPlugin uptime
 #LoadPlugin users
 #LoadPlugin uuid
-LoadPlugin vmem
+#LoadPlugin vmem
 #LoadPlugin vserver
 #LoadPlugin wireless
 #LoadPlugin write_http
@@ -159,10 +159,10 @@ LoadPlugin vmem
 #	</View>
 #</Plugin>
 
-#<Plugin csv>
-#	DataDir "/var/lib/collectd/csv"
-#	StoreRates false
-#</Plugin>
+<Plugin csv>
+	DataDir "/var/lib/collectd/csv"
+	StoreRates false
+</Plugin>
 
 #<Plugin curl>
 #	<Page "stock_quotes">
@@ -261,8 +261,8 @@ LoadPlugin vmem
 #<Plugin df>
 #	Device "/dev/sda1"
 #	Device "192.168.0.2:/mnt/nfs"
-#	MountPoint "/"
-#	FSType "ext4"
+#	MountPoint "/home"
+#	FSType "ext3"
 #	IgnoreSelected false
 #	ReportByDevice false
 #	ReportReserved false
@@ -270,8 +270,8 @@ LoadPlugin vmem
 #</Plugin>
 
 #<Plugin disk>
-#	Disk "sda"
-#	Disk "sdb"
+#	Disk "hda"
+#	Disk "/sda[23]/"
 #	IgnoreSelected false
 #</Plugin>
 
@@ -327,10 +327,10 @@ LoadPlugin vmem
 #	TranslateDevicename false
 #</Plugin>
 
-<Plugin "interface">
-	Interface "eth0"
-	IgnoreSelected false
-</Plugin>
+#<Plugin interface>
+#	Interface "eth0"
+#	IgnoreSelected false
+#</Plugin>
 
 #<Plugin ipmi>
 #	Sensor "some_sensor"
@@ -341,7 +341,7 @@ LoadPlugin vmem
 #	NotifySensorNotPresent false
 #</Plugin>
 
-#<Plugin "iptables">
+#<Plugin iptables>
 #	Chain "table" "chain"
 #</Plugin>
 
@@ -363,10 +363,10 @@ LoadPlugin vmem
 #	</Plugin>
 #</Plugin>
 
-<Plugin "libvirt">
-	Connection "qemu:///system"
+<Plugin libvirt>
+        Connection "qemu:///system"
 #	RefreshInterval 60
-#	Domain "instance-00000002"
+#	Domain "name"
 #	BlockDevice "name:device"
 #	InterfaceDevice "name:device"
 #	IgnoreSelected false
@@ -438,7 +438,7 @@ LoadPlugin vmem
 #</Plugin>
 
 <Plugin network>
-        Listen "172.29.74.80"
+        Server "127.0.0.1" "9000"
 #	# client setup:
 #	Server "ff18::efc0:4a42" "25826"
 #	<Server "239.192.74.66" "25826">
@@ -619,16 +619,47 @@ LoadPlugin vmem
 #	LocalSocket "/opt/collectd/var/run/collectd-powerdns"
 #</Plugin>
 
-<Plugin processes>
+#<Plugin processes>
 #	Process "name"
 #	ProcessMatch "foobar" "/usr/bin/perl foobar\\.pl.*"
-</Plugin>
+#</Plugin>
 
 <Plugin protocols>
-	Value "/^TcpExt:/"
-	Value "/^IpExt:/"
-	IgnoreSelected false
+        Value "/^TcpExt:/"
+        Value "/^IpExt:/"
+        IgnoreSelected false
 </Plugin>
+
+<LoadPlugin "python">
+    Globals true
+</LoadPlugin>
+
+<Plugin "python">
+    # carbon_writer.py is at path /opt/collectd-plugins/carbon_writer.py
+    ModulePath "/etc/collectd/collectd-plugins/"
+
+    Import "carbon_writer"
+
+    <Module "carbon_writer">
+        LineReceiverHost "127.0.0.1"
+        LineReceiverPort 2003
+        DifferentiateCountersOverTime true
+        LowercaseMetricNames true
+        TypesDB "/usr/share/collectd/types.db"
+    </Module>
+</Plugin>
+
+
+#<Plugin python>
+#	ModulePath "/path/to/your/python/modules"
+#	LogTraces true
+#	Interactive true
+#	Import "spam"
+#
+#	<Module spam>
+#		spam "wonderful" "lovely"
+#	</Module>
+#</Plugin>
 
 #<Plugin rrdcached>
 #	DaemonAddress "unix:/var/run/rrdcached.sock"
@@ -637,11 +668,11 @@ LoadPlugin vmem
 #	CollectStatistics true
 #</Plugin>
 
-<Plugin rrdtool>
-	DataDir "/var/lib/collectd/rrd"
+#<Plugin rrdtool>
+#	DataDir "/var/lib/collectd/rrd"
 #	CacheTimeout 120
-#	CacheFlush 120
-#	WritesPerSecond 50
+#	CacheFlush 900
+#	WritesPerSecond 30
 #	RandomTimeout 0
 #
 # The following settings are rather advanced
@@ -651,7 +682,7 @@ LoadPlugin vmem
 #	RRARows 1200
 #	RRATimespan 158112000
 #	XFF 0.1
-</Plugin>
+#</Plugin>
 
 #<Plugin sensors>
 #	Sensor "it8712-isa-0290/temperature-temp1"
