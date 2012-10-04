@@ -20,20 +20,19 @@ class collectd ( $graphitehost ) {
 }
 
 
- # package { 'collectd':
- #       ensure => installed,
- #       require => Package["graphite-web"],
- # }
+  package { 'collectd':
+        ensure => installed,
+        #require => Package["graphite-web"],
+  }
   
+ exec { "pip-collectd":
+                command => "pip install collectd",
+                path => "/bin:/usr/bin:/sbin:/usr/sbin",
+		logoutput => true,
+                notify  => Service["collectd"],
+        }
 
-  package { "collectd":
-       name     => "collectd",
-       ensure   => 'installed',
-       provider => 'pip',
-       #require => Package["collectd"],
-    }
 
- 
   file { "/etc/collectd/collectd.conf":
         notify  => Service["collectd"],
 	ensure  => present,
