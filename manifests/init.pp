@@ -10,7 +10,7 @@
 #  class { 'collectd': }
 #
 class collectd ( $graphitehost ) {
-#include graphite
+include pip
 
 
   service { "collectd":
@@ -28,8 +28,9 @@ class collectd ( $graphitehost ) {
  exec { "pip-collectd":
                 command => "pip install collectd",
                 path => "/bin:/usr/bin:/sbin:/usr/sbin",
-		logoutput => true,
+		logoutput => false,
                 notify  => Service["collectd"],
+		require => Package["python-pip"],
         }
 
 
