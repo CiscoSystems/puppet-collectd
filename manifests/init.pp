@@ -17,7 +17,7 @@ include pip
 	ensure  => "running",
 	enable  => "true",
 	require => Package["collectd"],
-}
+  }
 
 
   package { 'collectd':
@@ -25,13 +25,11 @@ include pip
         #require => Package["graphite-web"],
   }
   
- exec { "pip-collectd":
-                command => "pip install collectd",
-                path => "/bin:/usr/bin:/sbin:/usr/sbin",
-		logoutput => false,
-                notify  => Service["collectd"],
-		require => Package["python-pip"],
-        }
+  package { "collectd ": # A 'feature' of the pip installer is it doesn't notice the space
+        alias => 'pip-collectd',
+	notify  => Service["collectd"],
+	provider => 'pip',
+  }
 
 
   file { '/etc/collectd/collectd.conf':
@@ -47,7 +45,7 @@ include pip
   file { "/etc/collectd/collectd-plugins":
         ensure => "directory",
         require => Package["collectd"],
-}
+  }
  
 
   file { "/etc/collectd/collectd-plugins/carbon_writer.py":
@@ -57,11 +55,11 @@ include pip
         group   => "root",
         mode    => 0600,
         source  => "puppet:///modules/collectd/carbon_writer.py",
-        require => Package["collectd"],
-    }
+        require => [Package["collectd"],Package["pip-collectd"]],
+  }
 
 
-file {
+  file {
     '/etc/collectd/carbon-writer.conf':
       group   => 'root',
       mode    => '0644',
