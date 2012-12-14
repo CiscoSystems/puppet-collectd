@@ -9,7 +9,7 @@
 # Sample Usage:
 #  class { 'collectd': }
 #
-class collectd ( $graphitehost ) {
+class collectd ( $graphitehost, $management_interface ) {
 include pip
 
 
