@@ -70,7 +70,7 @@ LoadPlugin memory
 #LoadPlugin multimeter
 #LoadPlugin mysql
 #LoadPlugin netlink
-LoadPlugin network
+#LoadPlugin network
 #LoadPlugin nfs
 #LoadPlugin nginx
 #LoadPlugin notify_desktop
@@ -437,8 +437,8 @@ LoadPlugin vmem
 #	IgnoreSelected false
 #</Plugin>
 
-<Plugin network>
-        Listen "<%= graphitehost %>" "9000"
+#<Plugin network>
+#        Listen "<%= graphitehost %>" "9000"
 #	# client setup:
 #	Server "ff18::efc0:4a42" "25826"
 #	<Server "239.192.74.66" "25826">
@@ -466,7 +466,7 @@ LoadPlugin vmem
 #
 #	# "garbage collection"
 #	CacheFlush 1800
-</Plugin>
+#</Plugin>
 
 #<Plugin nginx>
 #	URL "http://localhost/status?auto"
