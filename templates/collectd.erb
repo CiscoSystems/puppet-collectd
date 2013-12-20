@@ -328,7 +328,7 @@ LoadPlugin vmem
 #</Plugin>
 
 <Plugin "interface">
-	Interface "<%= management_interface %>"
+	Interface "<%= @management_interface %>"
 	IgnoreSelected false
 </Plugin>
 
@@ -438,7 +438,7 @@ LoadPlugin vmem
 #</Plugin>
 
 #<Plugin network>
-#        Listen "<%= graphitehost %>" "9000"
+#        Listen "<%= @graphitehost %>" "9000"
 #	# client setup:
 #	Server "ff18::efc0:4a42" "25826"
 #	<Server "239.192.74.66" "25826">
