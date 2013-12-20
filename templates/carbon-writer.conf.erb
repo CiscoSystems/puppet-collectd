@@ -9,7 +9,7 @@
     Import "carbon_writer"
 
     <Module "carbon_writer">
-        LineReceiverHost "<%= graphitehost %>"
+        LineReceiverHost "<%= @graphitehost %>"
         LineReceiverPort 2003
         DifferentiateCountersOverTime true
         LowercaseMetricNames true
